@@ -6,6 +6,7 @@ const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
+const path = require('path');
 //For displaying the IP
 const os = require('os');
 // INITIAL VALUES
@@ -14,6 +15,9 @@ var run = false; // run timer on server start
 var text = ""; // initial text
 const COMMUNICATION_PORT = 3000; // HTTP port
 const UPDATE_INTERVAL = 1000; // maximum value is 1000(ms)!!!
+
+// app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, '')));
 
 // SEND DATA TO CLIENT
 function sendData() {
@@ -38,6 +42,10 @@ function timer() {
 // HTTP request
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/timer.html');
+});
+
+app.get('/umcs', (req, res) => {
+    res.sendFile(__dirname + '/umcs.html');
 });
 
 app.get('/timer', (req, res) => {

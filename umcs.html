@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Timer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <style>
+    body {
+      /*
+      background-image: url("/public/cel.png"); /* Path to your PNG image
+      background-size: cover; /* Cover the entire viewport
+      background-attachment: fixed;
+       */
+
+
+      background-color: black;
+
+      margin: 0;
+      color: white;
+      font-family: 'Roboto', sans-serif;
+      text-align: center;
+    }
+
+    .background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1; /* Set lower z-index than content */
+      background-image: url("/public/cel50.png"); /* Background image */
+      background-size: cover;
+    }
+
+    .container {
+      /*
+      position: absolute;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+
+       */
+      position: absolute;
+      top: 70%;
+
+      transform: translate(15%, -25%);
+
+    }
+
+    .timer {
+      font-size: 20vw;
+      color: white;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    .current_time {
+      font-size: 4vw;
+    }
+
+    .text {
+      font-size: 10vw;
+      color: white;
+      font-family: 'Roboto', sans-serif;
+    }
+  </style>
+</head>
+<body>
+<div class="background">
+
+</div>
+
+<div class="container">
+  <!--div class="text" id="text"></div-->
+  <div class="timer" id="timer"></div>
+  <!--div class="current_time" id="time"></div-->
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  var socket = io();
+  let clock;
+  let red = false;
+
+  socket.on("time", (data) => {
+    clock = data;
+    const result = new Date(data * 1000).toISOString().slice(11, 19);
+    document.getElementById("timer").innerText = result;
+  });
+
+  socket.on("current_time", (data) => {
+    document.getElementById("time").innerText = data;
+  });
+
+  socket.on("updateText", (data) => {
+    document.getElementById("text").innerText = data;
+  });
+
+  function blink() {
+    if (clock < 60 && clock > 0) {
+      if (red == false) {
+        document.getElementById("timer").style.color = "white";
+        red = false;
+      } else {
+        document.getElementById("timer").style.color = "white";
+        red = false;
+      }
+    } else if (clock == 0) {
+      document.getElementById("timer").style.color = "white";
+    } else {
+      document.getElementById("timer").style.color = "white";
+    }
+  }
+
+  setInterval(blink, 500);
+</script>
+</body>
+</html>
