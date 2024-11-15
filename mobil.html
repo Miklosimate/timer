@@ -91,6 +91,7 @@
 <body>
 <div class="container">
     <h1>Timer Controller</h1>
+
     <h2 id="time">00:05:00</h2>
     <input id = "hour" type="number" min="0" max="23" value="0">
     <input id="minute" type="number" min="0" max="59" value="5">
@@ -100,6 +101,8 @@
         <button id="start">Start</button>
         <button id="stop">Stop</button>
     </div>
+    <input type="datetime-local" id="datetime-input" class="text-input">
+    <button id="go">Go</button>
 
     <input type="text" id="text-input" class="text-input" placeholder="Enter Text">
     <div class="button-container">
@@ -110,6 +113,25 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
+    var go = document.getElementById("go");
+    go.addEventListener("click", () => {
+        var datetime = document.getElementById("datetime-input").value;
+        if (!datetime) {
+            alert("Please select a valid date and time.");
+            return;
+        }
+
+        var targetTime = new Date(datetime).getTime(); // Target time in milliseconds
+        var currentTime = Date.now(); // Current time in milliseconds
+        var diffInSeconds = Math.floor((targetTime - currentTime) / 1000);
+
+        if (diffInSeconds < 0) {
+            alert("The selected time is in the past!");
+        } else {
+            socket.emit("set", diffInSeconds);
+            socket.emit("start");
+        }
+    });
     var socket = io();
     socket.on("time", (data) => {
         const result = new Date(data * 1000).toISOString().slice(11, 19);
